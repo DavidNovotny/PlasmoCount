@@ -1,4 +1,5 @@
 from pathlib import Path
+import pathlib
 import pandas as pd
 from PIL import Image as PILImage
 import torch
@@ -19,6 +20,8 @@ class Model:
                  ls_model='ls_resnet.pkl',
                  gam_model='gam_resnet.pkl',
                  cutoffs=[1.5, 2.5]):
+        temp = pathlib.PosixPath
+        pathlib.PosixPath = pathlib.WindowsPath
         model_path = Path(model_path)
         device = torch.device(
             'cuda') if torch.cuda.is_available() else torch.device('cpu')
@@ -34,7 +37,7 @@ class Model:
         self.fileName = fileName
         img = PILImage.open(self.fileName).convert("RGB")
         tensor = transforms.ToTensor()(img)
-        self.img = tensor
+        self.img = tensor.cuda()
         return tensor
 
     def predict(self):
@@ -46,7 +49,7 @@ class Model:
             life_stages = []
             for bbox in prediction['boxes']:
                 x0, y0, x1, y1 = bbox.int()
-                bbox_img = Image(self.img[:, y0:y1, x0:x1])
+                bbox_img = Image(self.img[:, y0:y1, x0:x1].to("cpu"))
                 bbox_pred = self.class_model.predict(bbox_img)
                 if str(bbox_pred[0]) == 'infected':
                     if self.has_gams:
@@ -104,7 +107,7 @@ class Model:
 
     def apply_size_filter(self, pred, z_thresh):
         area = self.calc_area(pred['boxes'])
-        zscores = stats.zscore(area)
+        zscores = stats.zscore(area.to("cpu").numpy())
         idx = [i for i, score in enumerate(zscores) if abs(score) < z_thresh]
         for i in ["boxes", "labels", "scores"]:
             pred[i] = pred[i][idx]
