@@ -13,9 +13,13 @@ const About = () => {
         </b>
       </p>
       <p>
-        <b>Disclaimer</b>: PlasmoCount is currently in beta-testing. It should
-        be tested on a user-to-user basis and <b>not</b> be used for medical
-        diagnosis.
+        <b>Disclaimer</b>: PlasmoCount is currently in beta-testing.
+         It should be tested on a user-to-user basis and not be used for
+         medical diagnosis. For full details of our first version see
+         the paper: Davidson, M., Andradi-Brown, C., Yahiya, S., Chmielewski, J.,
+          O’Donnell, A., Gurung, P., . . . Baum, J. (2021). Automated detection
+          and staging of malaria parasites from cytological smears using convolutional
+          neural networks. <em>Biological Imaging</em>, 1, E2. doi:10.1017/S2633903X21000015
       </p>
       <h2>Uploading your data</h2>
       <img
@@ -24,11 +28,11 @@ const About = () => {
         src="/images/upload.png"
       ></img>
       <p>
-        To upload your data, please fill out your email address so that we can
-        send you your results. We currently only support{" "}
-        <em>Plasmodium falciparum </em> data, but you can test the tool with
-        your own data for the purpose of cell counting or detection of
-        infection. Our gametocytes tool is currently still in development.
+        To upload your data, please fill out your email address so that we can send you
+        your results. We are now supporting <em>Plasmodium falciparum</em> data and rodent malarias
+        <em>P. berghei, P. chabaudi</em> and <em>P. yoelii</em>, feel free to test the tool with your own data
+        for the purpose of cell counting or detection of infection. Our gametocytes tool is
+        currently still in development.
       </p>
       <p>
         For the image upload, please upload images in either <b>.tiff</b>,{" "}
@@ -93,6 +97,14 @@ const About = () => {
         been tested with microscopy images taken down the microscope with an
         iPhone at 2x zoom. After submitting, you can view your results on your
         desktop by navigating to the unique job link.
+      </p>
+      <h2>Acknowledgements</h2>
+      <p>
+        PlasmoCount has been developed with support from across the malaria
+        research community (see the primary paper). Development has been led
+        by Mira Davidson, David Novotny and Clare Andradi-Brown. PlasmoCount
+        has been made possible via funding from the Bill & Melinda Gates Foundation (OPP1181199)
+        the RoseTrees Trust (PGS21/10035) with additional support coming from Wellcome (100993/Z/13/Z).
       </p>
     </div>
   );

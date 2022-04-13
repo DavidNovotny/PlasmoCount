@@ -7,11 +7,8 @@ const Menu = () => {
       <Link className="header item" to="/">
         PlasmoCount
       </Link>
-      <Link className="item" to="/">
-        Home
-      </Link>
-      <Link className="item" to="/pages/about">
-        About
+      <Link className="item" to="/pages/tool">
+        Tool
       </Link>
       <div className="right menu">
         <div className="ui item">

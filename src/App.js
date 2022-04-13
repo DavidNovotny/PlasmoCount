@@ -29,11 +29,12 @@ const App = () => {
         <h1 className="ui center aligned header">PlasmoCount</h1>
         <div className="ui hidden divider"></div>
         <Route
-          path={["/", "/:id"]}
-          exact
-          render={(props) => <Form {...props} onSubmit={onFormSubmit} />}
+          path="/"
+          //exact
+          //render={(props) => <Form {...props} onSubmit={onFormSubmit} />}
+          exact component={About}
         />
-        <Route path="/pages/about" exact component={About} />
+        <Route path="/pages/tool" exact render={(props) => <Form {...props} onSubmit={onFormSubmit} />} />
         <div className="ui hidden divider"></div>
         <Route path="/:id" exact component={Results} />
       </div>
