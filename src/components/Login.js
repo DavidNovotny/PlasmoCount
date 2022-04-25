@@ -42,26 +42,35 @@ function Login(props) {
       )}
 
     return (
-      <div>
-        <h1>Login</h1>
-          <form className="login">
+    <div className="ui styled accordion" style={{margin: 'auto'}}>
+      <div className={"active content"}>
+        <form className="ui form">
+          <div className="field">
+            <label>Username</label>
             <input onChange={handleChange}
-                  type="username"
+                  type="text"
                   text={loginForm.username}
                   name="username"
                   placeholder="Username"
                   value={loginForm.username} />
+          </div>
+          <div className="field">
+            <label>Password</label>
             <input onChange={handleChange}
                   type="password"
                   text={loginForm.password}
                   name="password"
                   placeholder="Password"
                   value={loginForm.password} />
-
-          <button onClick={logMeIn}>Submit</button>
+          </div>
+          <button className="ui button" type="submit" onClick={logMeIn}>
+            Submit
+          </button>
         </form>
       </div>
-    );
+    </div>
+  );
+
 }
 
 export default Login;
