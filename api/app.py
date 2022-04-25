@@ -1,24 +1,31 @@
 from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS, cross_origin
+from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, \
+    unset_jwt_cookies, jwt_required, JWTManager
 
 from pathlib import Path
 import matplotlib
 import warnings
 import json
 import time
-
-matplotlib.use('Agg')
-warnings.filterwarnings('ignore')
+from datetime import datetime, timedelta, timezone
 
 from programs.model import Model
 from programs.result import Result
 from programs.summarize import summarize
 
+matplotlib.use('Agg')
+warnings.filterwarnings('ignore')
+
 app = Flask(__name__, static_folder='../build', static_url_path='/')
 app.config.from_object('config')
 UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
 EXAMPLE_FOLDER = app.config['EXAMPLE_FOLDER']
+print(app.config['USERNAME'])
+print(app.config['PASSWORD'])
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 CORS(app, support_credentials=True)
+jwt = JWTManager(app)
 
 
 @app.errorhandler(404)
@@ -29,6 +36,25 @@ def not_found(e):
 @app.route('/')
 def index():
     return app.send_static_file('index.html')
+
+
+@app.route('/token', methods=["POST"])
+def create_token():
+    username = request.json.get("username", None)
+    password = request.json.get("password", None)
+    if username != app.config['USERNAME'] or password != app.config['PASSWORD']:
+        return {"msg": "Wrong username or password"}, 401
+
+    access_token = create_access_token(identity=username)
+    response = {"access_token": access_token}
+    return response
+
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    response = jsonify({"msg": "logout successful"})
+    unset_jwt_cookies(response)
+    return response
 
 
 @app.route('/api/uploads/<path:filename>')
@@ -42,6 +68,7 @@ def download_example(filename):
 
 
 @app.route('/api/model', methods=['POST'])
+@jwt_required()
 def run(upload_folder=UPLOAD_FOLDER):
     job = {
         'id': request.form.get('id'),

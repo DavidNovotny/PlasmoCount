@@ -9,6 +9,7 @@ const Form = (props) => {
   const [files, setFiles] = useState(null);
   const [isOpen, makeOpen] = useState(true);
   const active = isOpen ? "active" : "";
+  console.log(props.token)
 
   const onFormSubmit = (e) => {
     e.preventDefault();
@@ -26,7 +27,7 @@ const Form = (props) => {
     formData.append("data-contrib", dataContrib);
     formData.append("date", date.toISOString());
     makeOpen(false);
-    props.onSubmit(formData);
+    props.onSubmit(formData, props.token);
   };
 
   return (

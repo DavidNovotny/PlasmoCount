@@ -3,13 +3,16 @@ import Form from "./components/Form/Form";
 import Menu from "./components/Menu";
 import About from "./components/About";
 import Results from "./components/Results/Results";
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import Login from "./components/Login";
+import useToken from './components/useToken'
+import { BrowserRouter as Router, Route, Routes, Redirect, useLocation } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
 const App = () => {
   const [activeJob, setActiveJob] = useState(null);
+  const { token, removeToken, setToken } = useToken();
 
-  const onFormSubmit = (formData) => {
+  const onFormSubmit = (formData, authToken) => {
     if (formData) {
       const jobId = uuidv4();
       formData.append("id", jobId);
@@ -17,6 +20,9 @@ const App = () => {
       fetch("/api/model", {
         method: "POST",
         body: formData,
+        headers: {
+        Authorization: 'Bearer ' + authToken
+        }
       });
     }
   };
@@ -30,11 +36,17 @@ const App = () => {
         <div className="ui hidden divider"></div>
         <Route
           path="/"
-          //exact
-          //render={(props) => <Form {...props} onSubmit={onFormSubmit} />}
           exact component={About}
         />
-        <Route path="/pages/tool" exact render={(props) => <Form {...props} onSubmit={onFormSubmit} />} />
+        <Route path="/pages/login" exact><Login setToken={setToken} /></Route>
+        <Route path="/pages/tool" exact>
+          {token || token=="" ?
+            <Form onSubmit={onFormSubmit} token={token} setToken={setToken}/>
+            // only keep what is in the render prop?
+          :
+            <Login setToken={setToken} />
+          }
+        </Route>
         <div className="ui hidden divider"></div>
         <Route path="/:id" exact component={Results} />
       </div>
