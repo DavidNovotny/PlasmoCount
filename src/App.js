@@ -12,7 +12,7 @@ const App = () => {
   const [activeJob, setActiveJob] = useState(null);
   const { token, removeToken, setToken } = useToken();
 
-  const onFormSubmit = (formData, authToken) => {
+  const onFormSubmit = (formData, authToken, removeToken) => {
     if (formData) {
       const jobId = uuidv4();
       formData.append("id", jobId);
@@ -23,8 +23,13 @@ const App = () => {
         headers: {
         Authorization: 'Bearer ' + authToken
         }
+      }).catch(function(error) {
+        if (error instanceof TypeError) {
+          removeToken();
+          window.location.replace("../pages/tool");
+        };
       });
-    }
+    };
   };
 
   return (
@@ -40,8 +45,8 @@ const App = () => {
         />
         <Route path="/pages/login" exact><Login setToken={setToken} /></Route>
         <Route path="/pages/tool" exact>
-          {token || token=="" ?
-            <Form onSubmit={onFormSubmit} token={token} setToken={setToken}/>
+          {token || token==""?
+            <Form onSubmit={onFormSubmit} token={token} setToken={setToken} removeToken={removeToken}/>
             // only keep what is in the render prop?
           :
             <Login setToken={setToken} />

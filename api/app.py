@@ -21,9 +21,7 @@ app = Flask(__name__, static_folder='../build', static_url_path='/')
 app.config.from_object('config')
 UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
 EXAMPLE_FOLDER = app.config['EXAMPLE_FOLDER']
-print(app.config['USERNAME'])
-print(app.config['PASSWORD'])
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=8)
 CORS(app, support_credentials=True)
 jwt = JWTManager(app)
 
@@ -36,6 +34,24 @@ def not_found(e):
 @app.route('/')
 def index():
     return app.send_static_file('index.html')
+
+
+@app.after_request
+def refresh_expiring_jwts(response):
+    try:
+        exp_timestamp = get_jwt()["exp"]
+        now = datetime.now(timezone.utc)
+        target_timestamp = datetime.timestamp(now + timedelta(hours=4))
+        if target_timestamp > exp_timestamp:
+            access_token = create_access_token(identity=get_jwt_identity())
+            data = response.get_json()
+            if type(data) is dict:
+                data["access_token"] = access_token
+                response.data = json.dumps(data)
+        return response
+    except (RuntimeError, KeyError):
+        # Case where there is not a valid JWT. Just return the original response
+        return response
 
 
 @app.route('/token', methods=["POST"])

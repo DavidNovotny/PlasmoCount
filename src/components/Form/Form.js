@@ -1,6 +1,7 @@
 import "./Form.css";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const Form = (props) => {
   const [emailAddress, setEmailAddress] = useState("");
@@ -9,7 +10,21 @@ const Form = (props) => {
   const [files, setFiles] = useState(null);
   const [isOpen, makeOpen] = useState(true);
   const active = isOpen ? "active" : "";
-  console.log(props.token)
+
+  function logMeOut() {
+    axios({
+      method: "POST",
+      url:"/logout",
+    })
+    .then((response) => {
+       props.removeToken()
+    }).catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })}
 
   const onFormSubmit = (e) => {
     e.preventDefault();
@@ -27,7 +42,7 @@ const Form = (props) => {
     formData.append("data-contrib", dataContrib);
     formData.append("date", date.toISOString());
     makeOpen(false);
-    props.onSubmit(formData, props.token);
+    props.onSubmit(formData, props.token, props.removeToken);
   };
 
   return (

@@ -10,9 +10,6 @@ const Menu = () => {
       <Link className="item" to="/pages/tool">
         Tool
       </Link>
-      <Link className="item" to="/pages/login">
-        Login
-      </Link>
       <div className="right menu">
         <div className="ui item">
           <p>

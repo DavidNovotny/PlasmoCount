@@ -19,7 +19,6 @@ function Login(props) {
       })
       .then((response) => {
         props.setToken(response.data.access_token);
-        console.log(response.data.access_token)
       }).catch((error) => {
         if (error.response) {
           console.log(error.response)
